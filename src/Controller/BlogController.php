@@ -3,7 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Articles;
+use App\Repository\ArticlesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Routing\Annotation\Route;
 
 class BlogController extends AbstractController
@@ -11,10 +14,9 @@ class BlogController extends AbstractController
     /**
      * @Route("/blog", name="blog")
      */
-    public function index()
+    public function index(ArticlesRepository $repo)
     {
-        $repo = $this->getDoctrine()->getRepository(Articles::class);
-        $article = $repo ->findAll();
+        $article = $repo->findAll();
         return $this->render('blog/index.html.twig', [
             'controller_name' => 'BlogController',
             'articles' => $article ,
@@ -32,13 +34,30 @@ class BlogController extends AbstractController
     }
 
     /**
+     * @Route("/blog/new" , name="blog_create")
+     */
+    public function create() {
+        $article = new Articles();
+        $form = $this->createFormBuilder($article)
+                     ->add('title')
+                     ->add('content')
+                     ->add('image')
+                     ->getForm();
+
+        return $this->render('blog/create.html.twig' , [
+            'formArticle' => $form->createView(),
+        ]);
+    }
+
+    /**
      * @Route("/blog/{id}" , name="blog_show")
      */
-    public function show($id){
-        $repo = $this->getDoctrine()->getRepository(Articles::class);
-        $article = $repo->find($id);
+    //parameConverter Convertir un param de la requete a un objet
+    public function show(Articles $article){
         return $this->render('blog/show.html.twig' , [
             'article' => $article ,
         ]);
     }
+
+
 }
