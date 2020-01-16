@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Articles;
+use App\Form\ArticleType;
 use App\Repository\ArticlesRepository;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,12 +48,7 @@ class BlogController extends AbstractController
         if(!$article){
             $article = new Articles();
         }
-        $form = $this->createFormBuilder($article)
-                     ->add('title')
-                     ->add('content')
-                     ->add('image')
-                     ->getForm();
-
+        $form = $this->createForm(ArticleType::class , $article);
         //Analuser la requettes
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
