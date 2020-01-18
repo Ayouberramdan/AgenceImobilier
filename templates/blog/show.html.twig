@@ -11,11 +11,25 @@
 <section class="articles">
         <article>
             <h2>{{article.title}}</h2>
+            <h3>{{ article.category.title }}</h3>
             <div class="metadata"> Ecrit le {{ article.createdAt | date('d/m/y')}} a {{ article.createdAt | date('H:i')}}</div>
             <div class="content" style="display">
                 <img src="{{ article.image }}" alt="">
             </div>
             {{ article.content | raw}}
+            <div class="commentaire">
+                <h4>COMMENTAIRES</h4>
+                {% for comment in article.comments %}
+                    <div class="row">
+                    <div class="col-3">
+                        {{ comment.author }} <small> {{ comment.createdAt | date('d/m/y') }}</small>
+                    </div>
+                    <div class="col">
+                        <p> {{ comment.content }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
         </article>
 </section>
 {% endblock %}
