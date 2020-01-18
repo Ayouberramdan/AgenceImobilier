@@ -41,10 +41,6 @@ class Articles
      */
     private $createdAt;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="Articles", orphanRemoval=true)
-     */
-    private $images;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="articles")
@@ -52,9 +48,15 @@ class Articles
      */
     private $category;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Comment", mappedBy="article", orphanRemoval=true)
+     */
+    private $comments;
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -110,37 +112,6 @@ class Articles
         return $this;
     }
 
-    /**
-     * @return Collection|Image[]
-     */
-    public function getImages(): Collection
-    {
-        return $this->images;
-    }
-
-    public function addImage(Image $image): self
-    {
-        if (!$this->images->contains($image)) {
-            $this->images[] = $image;
-            $image->setArticles($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImage(Image $image): self
-    {
-        if ($this->images->contains($image)) {
-            $this->images->removeElement($image);
-            // set the owning side to null (unless already changed)
-            if ($image->getArticles() === $this) {
-                $image->setArticles(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -149,6 +120,37 @@ class Articles
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setArticle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getArticle() === $this) {
+                $comment->setArticle(null);
+            }
+        }
 
         return $this;
     }

@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20200117002232 extends AbstractMigration
+final class Version20200118121646 extends AbstractMigration
 {
     public function getDescription() : string
     {
@@ -23,6 +23,8 @@ final class Version20200117002232 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('CREATE TABLE category (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, description LONGTEXT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE comment (id INT AUTO_INCREMENT NOT NULL, article_id INT NOT NULL, author VARCHAR(255) NOT NULL, content LONGTEXT NOT NULL, created_at DATETIME NOT NULL, INDEX IDX_9474526C7294869C (article_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526C7294869C FOREIGN KEY (article_id) REFERENCES articles (id)');
         $this->addSql('ALTER TABLE articles ADD category_id INT NOT NULL');
         $this->addSql('ALTER TABLE articles ADD CONSTRAINT FK_BFDD316812469DE2 FOREIGN KEY (category_id) REFERENCES category (id)');
         $this->addSql('CREATE INDEX IDX_BFDD316812469DE2 ON articles (category_id)');
@@ -35,6 +37,7 @@ final class Version20200117002232 extends AbstractMigration
 
         $this->addSql('ALTER TABLE articles DROP FOREIGN KEY FK_BFDD316812469DE2');
         $this->addSql('DROP TABLE category');
+        $this->addSql('DROP TABLE comment');
         $this->addSql('DROP INDEX IDX_BFDD316812469DE2 ON articles');
         $this->addSql('ALTER TABLE articles DROP category_id');
     }
